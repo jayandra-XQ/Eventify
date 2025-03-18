@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="components/navbar.jsp" %>
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,7 +17,6 @@
     </style>
 </head>
 <body>
-    <%@ include file="components/navbar.jsp" %>
     
     <main class="container d-flex justify-content-center align-items-center py-5">
         <div class="login-container d-flex">
