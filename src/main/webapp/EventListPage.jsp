@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, model.Event, dao.EventDAO" %>
 <%@ include file="components/navbar.jsp" %>
+<%@ page import="java.util.List, model.Event, dao.EventDAO" %>
+
 
 <%
     // Security check using existing 'role' variable from navbar.jsp
