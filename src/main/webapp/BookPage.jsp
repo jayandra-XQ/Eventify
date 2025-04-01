@@ -16,7 +16,7 @@
         }
         h1 {
             color: #123A85;
-            text-align: center;
+            text-align: left;
             margin: 30px 0;
         }
         main {

@@ -9,4 +9,24 @@
     <welcome-file>default.jsp</welcome-file>
     <welcome-file>default.htm</welcome-file>
   </welcome-file-list>
+  <servlet>
+    <description></description>
+    <display-name>PaymentServlet</display-name>
+    <servlet-name>PaymentServlet</servlet-name>
+    <servlet-class>controller.PaymentServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PaymentServlet</servlet-name>
+    <url-pattern>/PaymentServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DeleteAccountServlet</display-name>
+    <servlet-name>DeleteAccountServlet</servlet-name>
+    <servlet-class>controller.DeleteAccountServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteAccountServlet</servlet-name>
+    <url-pattern>/DeleteAccountServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
