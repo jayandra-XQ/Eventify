@@ -1,115 +1,146 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="dao.BookingDAO, dao.PaymentDAO, dao.VenueDAO, model.*, java.util.List" %>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>BookingHistory Page</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" 
-	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
-<style>
-	body {
-            display: flex;
-            flex-direction: column; 
+    <meta charset="UTF-8">
+    <title>Booking History</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
             min-height: 100vh;
-        }
-        h1 {
-            color: #123A85;
-        }
-
-       main {
-            flex: 1;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 0;
+            flex-direction: column;
         }
-        h2{
-       		text-align: center;
-       		margin-top: 30px;
-       	}
-
-        .history-container { 
-            width: 80%;
+        .history-container {
             max-width: 1200px;
-           margin-bottom: 500px;
-            background-color: white;
-            padding: 20px;
+            margin: 30px auto;
+            padding: 25px;
+            background: white;
             border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
         }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        .payment-status {
-            padding: 5px 10px;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-        }
-
-        .payment-success {
+        .success-badge {
             background-color: #28a745;
+            color: white;
         }
-</style>
+        .failed-badge {
+            background-color: #dc3545;
+            color: white;
+        }
+        .card-masked {
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
 <body>
-	<header>
-	        <div>  
-            <h1>EVENTIFY!!</h1>
-        </div>
-    	</header>
     <%@ include file="components/navbar.jsp" %>
+
+    <% 
+    // Session check
+    if(user == null) {
+        response.sendRedirect("LoginPage.jsp");
+        return;
+    }
     
-            <h2>History</h2>
-    <main>
-        <div class="history-container">  
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>PersonName</th>
-                        <th>CardNumber</th>
-                        <th>Expire</th>
-                        <th>Payment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>ishwar</td>
-                        <td>87872643556</td>
-                        <td>09/2025</td>
-                        <td><span class="payment-status payment-success">Payment Success</span></td>
-                    </tr>
-                    <%-- Add more rows here --%>
-                </tbody>
-            </table>
-        </div>
+    // Get messages
+    String success = request.getParameter("success");
+    String error = request.getParameter("error");
+    
+    // Get bookings
+    BookingDAO bookingDAO = new BookingDAO();
+    List<Booking> bookings = bookingDAO.getUserBookings(user.getId());
+    %>
+
+    <main class="history-container">
+        <%-- Messages --%>
+        <% if(success != null) { %>
+            <div class="alert alert-success mb-4">
+                <%= success %>
+            </div>
+        <% } %>
+        
+        <% if(error != null) { %>
+            <div class="alert alert-danger mb-4">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <h2 class="mb-4 text-center">Booking History</h2>
+        
+        <% if(bookings.isEmpty()) { %>
+            <div class="alert alert-info text-center">
+                No bookings found. Book your first event!
+            </div>
+        <% } else { %>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                        
+                            <th>Event Type</th>
+                            <th>Ticket Number</th>
+                            <th>Location</th>
+                            <th>Booking Date</th>
+                            <th>Amount</th>
+                            <th>Card Used</th>
+                           
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(Booking booking : bookings) { 
+                            Venue venue = new VenueDAO().getVenueById(booking.getVenueId());
+                            Payment payment = new PaymentDAO().getPaymentByBookingId(booking.getId());
+                        %>
+                            <tr>
+                                <td><%= venue != null ? venue.getEventType() : "N/A" %></td>
+                                <td><%= booking.getTicketNumber() %></td>
+                                <td><%= venue != null ? venue.getLocation() : "N/A" %></td>
+                                <td><%= booking.getBookingDate() %></td>
+                                <td>
+                                    <% if(payment != null) { %>
+                                        ₹<%= String.format("%,.2f", payment.getAmount()) %>
+                                    <% } else { %>
+                                        Payment Failed
+                                    <% } %>
+                                </td>
+                                <td class="card-masked">
+                                    <% if(payment != null && payment.getCardNumber() != null) { 
+                                        String cardNumber = payment.getCardNumber();
+                                        if(cardNumber.length() >= 16) { %>
+                                            **** **** **** <%= cardNumber.substring(12) %>
+                                        <% } else { %>
+                                            Invalid Card
+                                        <% } %>
+                                    <% } else { %>
+                                        N/A
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <span class="status-badge <%= booking.getStatus().equalsIgnoreCase("confirmed") ? "success-badge" : "failed-badge" %>">
+                                        <%= booking.getStatus() %>
+                                    </span>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
     </main>
 
-	
-
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-    <footer class="mt-auto"> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <footer class="mt-auto">
         <%@ include file="components/footer.jsp" %>
     </footer>
-    
 </body>
 </html>

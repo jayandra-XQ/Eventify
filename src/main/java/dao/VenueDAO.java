@@ -27,6 +27,39 @@ public class VenueDAO {
             return false;
         }
     }
+    
+    // For transactions (with existing connection)
+    public Venue getVenueById(Connection conn, int venueId) throws SQLException {
+        return queryVenueById(conn, venueId);
+    }
+
+    // For non-transactional use (self-managed connection)
+    public Venue getVenueById(int venueId) throws SQLException {
+        try (Connection conn = DatabaseUtil.getConnection()) {
+            return queryVenueById(conn, venueId);
+        }
+    }
+
+    private Venue queryVenueById(Connection conn, int venueId) throws SQLException {
+        String sql = "SELECT * FROM venues WHERE id = ?";
+        Venue venue = null;
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, venueId);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                venue = new Venue();
+                venue.setId(rs.getInt("id"));
+                venue.setEventType(rs.getString("event_type"));
+                venue.setCapacity(rs.getInt("capacity"));
+                venue.setCost(rs.getDouble("cost"));
+                venue.setLocation(rs.getString("location"));
+                venue.setPhotoUrl(rs.getString("photo_url"));
+            }
+        }
+        return venue;
+    }
 
     public List<Venue> getAllVenues() {
         List<Venue> venues = new ArrayList<>();

@@ -128,6 +128,7 @@
         .image-gallery img:hover{
             transform: scale(1.03);
         }
+        
 
         @media (max-width: 768px) {
             .image-gallery img {
@@ -139,6 +140,8 @@
                 width: 100%; 
             }
         }
+        
+        
         
         .alert-success {
             background-color: #d4edda;
@@ -158,6 +161,30 @@
 		    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
 		    background-color: white;
 		}
+		
+		.image-card {
+        position: relative;
+        margin: 15px;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .image-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        padding: 15px;
+        color: white;
+    }
+    
+    .event-name {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+		
     </style>
 </head>
 
@@ -171,7 +198,7 @@
 
     <main>
         <div class="venue-container">
-            <h2>Event VENUE</h2>
+            <h2>Coming Up...</h2>
             <hr>
             
             <%-- Display success message --%>
@@ -183,12 +210,19 @@
             
             
             <div class="image-gallery">
-                <% for (Venue venue : venues) { 
-                    if (venue.getPhotoUrl() != null) { %>
-                        <img src="uploads/<%= venue.getPhotoUrl() %>" alt="Venue Photo">
-                <% } 
-                } %>
-            </div>
+			    <% for (Venue venue : venues) { 
+			        if (venue.getPhotoUrl() != null) { %>
+			            <div class="image-card">
+			                <img src="uploads/<%= venue.getPhotoUrl() %>" 
+			                     alt="Venue Photo" 
+			                     style="width: 100%; height: 250px; object-fit: cover; border-radius: 12px; box-shadow: 0 6px 12px rgba(0,0,0,0.12);">
+			                <div class="image-overlay">
+			                    <h3 class="event-name"><%= venue.getEventType() %></h3>
+			                </div>
+			            </div>
+			    <% } 
+			    } %>
+			</div>
             <form action="add-venue" method="POST"  enctype="multipart/form-data">
             
             	<div class="form-group">

@@ -99,11 +99,14 @@
                                 <td><%= event.getEventName() %></td>
                                 <td><%= event.getDescription() %></td>
                                 <td>
+                                    
                                     <form action="delete-event" method="POST" style="display: inline-block;">
                                         <input type="hidden" name="eventId" value="<%= event.getId() %>">
                                         <button type="submit" class="btn-delete">Delete</button>
                                     </form>
                                 </td>
+                                
+   
                             </tr>
                         <% } %>
                     </tbody>

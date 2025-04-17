@@ -101,7 +101,7 @@
             if (userRole === 'admin') {
                 navItems.innerHTML += `
                     <li class="nav-item"><a class="nav-link" href="./UserListPage.jsp">User List</a></li>
-                    <li class="nav-item"><a class="nav-link" href="./BookingHistoryPage.jsp">Booking History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./AllBookingsPage.jsp">Booking History</a></li>
                     <li class="nav-item"><a class="nav-link" href="./VenuePage.jsp">Venue</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="eventDropdown" role="button" 

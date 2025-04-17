@@ -16,7 +16,7 @@ public class UserDAO {
             pstmt.setString(1, user.getFirstName());
             pstmt.setString(2, user.getLastName());
             pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, user.getPassword()); // Plain text
+            pstmt.setString(4, user.getPassword()); 
             pstmt.setString(5, user.getGender());
             pstmt.setString(6, "user"); // Default role
 
@@ -35,12 +35,14 @@ public class UserDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, email);
-            pstmt.setString(2, password); // Plain text comparison
+            pstmt.setString(2, password); 
             
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 User user = new User();
                 user.setId(rs.getInt("id"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));    
                 user.setEmail(rs.getString("email"));
                 user.setRole(rs.getString("role"));
                 return user;
